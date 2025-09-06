@@ -11,7 +11,7 @@ const About = () => {
   return (
     <section
       ref={ref}
-      className="py-20 bg-white"
+      className="py-20 relative min-h-screen bg-[#F8EDE3]"
       style={{
         maxWidth: "1920px",
         margin: "0 auto",

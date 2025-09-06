@@ -23,7 +23,7 @@
 
   body {
     font-family: var(--font-sans);
-    color: var(--color-text-primary);
+    background-color: rgb(248, 237, 227);
   }
 
   html {
@@ -31,7 +31,7 @@
   }
 
   /* Custom scrollbar */
-  ::-webkit-scrollbar {
+  /* ::-webkit-scrollbar {
     width: 8px;
   }
   ::-webkit-scrollbar-track {
@@ -43,7 +43,7 @@
   }
   ::-webkit-scrollbar-thumb:hover {
     background: #b85842;
-  }
+  } */
 }
 
 @layer utilities {
