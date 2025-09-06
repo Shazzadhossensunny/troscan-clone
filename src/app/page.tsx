@@ -1,3 +1,11 @@
+import About from "@/components/home/About";
+import Hero from "@/components/home/Hero";
+
 export default function Home() {
-  return <h1 className="bg-red-50 text-5xl">Hello world!</h1>;
+  return (
+    <>
+      <Hero />
+      <About />
+    </>
+  );
 }

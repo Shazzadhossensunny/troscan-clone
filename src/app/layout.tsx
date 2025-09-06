@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Archivo } from "next/font/google";
 import "./globals.css";
+import Header from "@/components/shared/Header";
 
 const archivo = Archivo({
   subsets: ["latin"],
@@ -27,7 +28,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${archivo.className} antialiased`}>{children}</body>
+      <body className={`${archivo.className} antialiased`}>
+        <Header />
+        {children}
+      </body>
     </html>
   );
 }
