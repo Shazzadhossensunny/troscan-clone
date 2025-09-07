@@ -2,12 +2,28 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
+
+interface Project {
+  id: string;
+  title: string;
+  subtitle: string;
+  image: string;
+}
 
 const Projects = () => {
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [windowHeight, setWindowHeight] = useState(0);
 
-  const projects = [
+  useEffect(() => {
+    // Set initial window height and handle resize
+    setWindowHeight(window.innerHeight);
+    const handleResize = () => setWindowHeight(window.innerHeight);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const projects: Project[] = [
     {
       id: "01",
       title: "Serene Urban Retreat",
@@ -33,118 +49,138 @@ const Projects = () => {
     offset: ["start start", "end start"],
   });
 
+  // Calculate y transforms for each project based on scroll progress
+  const y1 = useTransform(
+    scrollYProgress,
+    [0, 0.33, 0.66, 1],
+    [0, -windowHeight, -windowHeight * 2, -windowHeight * 2]
+  );
+
+  const y2 = useTransform(
+    scrollYProgress,
+    [0, 0.33, 0.66, 1],
+    [windowHeight, 0, -windowHeight, -windowHeight]
+  );
+
+  const y3 = useTransform(
+    scrollYProgress,
+    [0, 0.33, 0.66, 1],
+    [windowHeight * 2, windowHeight, 0, 0]
+  );
+
   return (
-    <div ref={containerRef} className="relative" style={{ height: "300vh" }}>
+    <div
+      ref={containerRef}
+      className="relative bg-gray-900"
+      style={{ height: `${projects.length * 100}vh` }}
+    >
+      {/* Background elements for visual appeal */}
+      <div className="absolute inset-0 overflow-hidden opacity-20">
+        <div className="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-b from-blue-500 to-transparent"></div>
+        <div className="absolute top-1/3 left-0 w-full h-1/3 bg-gradient-to-b from-purple-500 to-transparent"></div>
+        <div className="absolute top-2/3 left-0 w-full h-1/3 bg-gradient-to-b from-indigo-500 to-transparent"></div>
+      </div>
+
       <div className="sticky top-0 h-screen overflow-hidden">
-        {/* Image 1 */}
-        <motion.div
-          className="absolute inset-0"
-          style={{
-            y: useTransform(
-              scrollYProgress,
-              [0, 1 / 3],
-              [0, -window.innerHeight]
-            ),
-          }}
-        >
-          <Image
-            src="/images/p1.jpeg"
-            alt="Project 1"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="absolute inset-0 flex items-center justify-center text-white">
-            <div className="text-center max-w-4xl mx-auto px-12">
-              <div className="text-lg font-light mb-4 tracking-widest opacity-80">
-                01
+        {/* Project 1 */}
+        <motion.div className="absolute inset-0" style={{ y: y1 }}>
+          <div className="relative w-full h-full">
+            <Image
+              src={projects[0].image}
+              alt={projects[0].title}
+              fill
+              className="object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 flex items-center justify-center text-white">
+              <div className="text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-lg font-light mb-2 sm:mb-4 tracking-widest opacity-80">
+                  {projects[0].id}
+                </div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
+                  {projects[0].title}
+                </h2>
+                <p className="text-base sm:text-lg md:text-xl font-light mb-8 sm:mb-12 opacity-90 max-w-2xl mx-auto">
+                  {projects[0].subtitle}
+                </p>
+                <button className="bg-white/10 backdrop-blur-sm text-white px-6 py-3 sm:px-8 sm:py-4 rounded-full font-medium text-base sm:text-lg border border-white/20 hover:bg-white/20 transition-all">
+                  View Project
+                </button>
               </div>
-              <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-                Serene Urban Retreat
-              </h2>
-              <p className="text-lg md:text-xl font-light mb-12 opacity-90 max-w-2xl mx-auto">
-                Where modern comfort meets peaceful sophistication.
-              </p>
-              <button className="bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-full font-medium text-lg border border-white/20 hover:bg-white/20">
-                View Project
-              </button>
             </div>
           </div>
         </motion.div>
 
-        {/* Image 2 */}
-        <motion.div
-          className="absolute inset-0"
-          style={{
-            y: useTransform(
-              scrollYProgress,
-              [0, 1 / 3, 2 / 3],
-              [window.innerHeight, 0, -window.innerHeight]
-            ),
-          }}
-        >
-          <Image
-            src="/images/p2.jpeg"
-            alt="Project 2"
-            fill
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="absolute inset-0 flex items-center justify-center text-white">
-            <div className="text-center max-w-4xl mx-auto px-12">
-              <div className="text-lg font-light mb-4 tracking-widest opacity-80">
-                02
+        {/* Project 2 */}
+        <motion.div className="absolute inset-0" style={{ y: y2 }}>
+          <div className="relative w-full h-full">
+            <Image
+              src={projects[1].image}
+              alt={projects[1].title}
+              fill
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 flex items-center justify-center text-white">
+              <div className="text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-lg font-light mb-2 sm:mb-4 tracking-widest opacity-80">
+                  {projects[1].id}
+                </div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
+                  {projects[1].title}
+                </h2>
+                <p className="text-base sm:text-lg md:text-xl font-light mb-8 sm:mb-12 opacity-90 max-w-2xl mx-auto">
+                  {projects[1].subtitle}
+                </p>
+                <button className="bg-white/10 backdrop-blur-sm text-white px-6 py-3 sm:px-8 sm:py-4 rounded-full font-medium text-base sm:text-lg border border-white/20 hover:bg-white/20 transition-all">
+                  View Project
+                </button>
               </div>
-              <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-                Luxurious Living Space
-              </h2>
-              <p className="text-lg md:text-xl font-light mb-12 opacity-90 max-w-2xl mx-auto">
-                Contemporary design with timeless elegance.
-              </p>
-              <button className="bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-full font-medium text-lg border border-white/20 hover:bg-white/20">
-                View Project
-              </button>
             </div>
           </div>
         </motion.div>
 
-        {/* Image 3 */}
-        <motion.div
-          className="absolute inset-0"
-          style={{
-            y: useTransform(
-              scrollYProgress,
-              [1 / 3, 2 / 3],
-              [window.innerHeight, 0]
-            ),
-            zIndex: 3,
-          }}
-        >
-          <Image
-            src="/images/p3.jpeg"
-            alt="Project 3"
-            fill
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="absolute inset-0 flex items-center justify-center text-white">
-            <div className="text-center max-w-4xl mx-auto px-12">
-              <div className="text-lg font-light mb-4 tracking-widest opacity-80">
-                03
+        {/* Project 3 */}
+        <motion.div className="absolute inset-0" style={{ y: y3 }}>
+          <div className="relative w-full h-full">
+            <Image
+              src={projects[2].image}
+              alt={projects[2].title}
+              fill
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 flex items-center justify-center text-white">
+              <div className="text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-lg font-light mb-2 sm:mb-4 tracking-widest opacity-80">
+                  {projects[2].id}
+                </div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
+                  {projects[2].title}
+                </h2>
+                <p className="text-base sm:text-lg md:text-xl font-light mb-8 sm:mb-12 opacity-90 max-w-2xl mx-auto">
+                  {projects[2].subtitle}
+                </p>
+                <button className="bg-white/10 backdrop-blur-sm text-white px-6 py-3 sm:px-8 sm:py-4 rounded-full font-medium text-base sm:text-lg border border-white/20 hover:bg-white/20 transition-all">
+                  View Project
+                </button>
               </div>
-              <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-                Elegant Modern Interior
-              </h2>
-              <p className="text-lg md:text-xl font-light mb-12 opacity-90 max-w-2xl mx-auto">
-                Sophisticated spaces for refined living.
-              </p>
-              <button className="bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-full font-medium text-lg border border-white/20 hover:bg-white/20">
-                View Project
-              </button>
             </div>
           </div>
         </motion.div>
+      </div>
+
+      {/* Scroll indicator */}
+      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex flex-col items-center">
+        <div className="text-white text-sm mb-2">Scroll to explore</div>
+        <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="w-1 h-3 bg-white rounded-full mt-2"
+          />
+        </div>
       </div>
     </div>
   );
