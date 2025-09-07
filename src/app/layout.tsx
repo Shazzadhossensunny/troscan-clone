@@ -3,9 +3,9 @@ import { Archivo } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/shared/Header";
 
-const archivo = Archivo({
+const archivoSans = Archivo({
+  variable: "--font-archivo-sans",
   subsets: ["latin"],
-  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${archivo.className} antialiased`}>
+      <body className={`${archivoSans.variable} antialiased`}>
         <Header />
         {children}
       </body>

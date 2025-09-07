@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 import Image from "next/image";
 import { useRef, useState, useEffect } from "react";
 
@@ -14,11 +14,17 @@ interface Project {
 const Projects = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [windowHeight, setWindowHeight] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    // Set initial window height and handle resize
-    setWindowHeight(window.innerHeight);
-    const handleResize = () => setWindowHeight(window.innerHeight);
+    const handleResize = () => {
+      setWindowHeight(window.innerHeight);
+    };
+
+    // Set initial height and mark as mounted
+    handleResize();
+    setIsMounted(true);
+
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -44,143 +50,225 @@ const Projects = () => {
     },
   ];
 
+  // Always call hooks unconditionally
   const { scrollYProgress } = useScroll({
-    target: containerRef,
+    target: isMounted ? containerRef : null,
     offset: ["start start", "end start"],
   });
 
-  // Calculate y transforms for each project based on scroll progress
+  // Calculate transforms for each project
   const y1 = useTransform(
     scrollYProgress,
     [0, 0.33, 0.66, 1],
-    [0, -windowHeight, -windowHeight * 2, -windowHeight * 2]
+    isMounted ? [0, -windowHeight, -windowHeight, -windowHeight] : [0, 0, 0, 0]
   );
 
   const y2 = useTransform(
     scrollYProgress,
     [0, 0.33, 0.66, 1],
-    [windowHeight, 0, -windowHeight, -windowHeight]
+    isMounted ? [windowHeight, 0, -windowHeight, -windowHeight] : [0, 0, 0, 0]
   );
 
   const y3 = useTransform(
     scrollYProgress,
     [0, 0.33, 0.66, 1],
-    [windowHeight * 2, windowHeight, 0, 0]
+    isMounted ? [windowHeight, windowHeight, 0, 0] : [0, 0, 0, 0]
   );
+
+  // Opacity transforms for smooth fade transitions
+  const opacity1 = useTransform(
+    scrollYProgress,
+    [0, 0.15, 0.33, 0.5],
+    isMounted ? [1, 1, 0.3, 0] : [1, 1, 1, 1]
+  );
+
+  const opacity2 = useTransform(
+    scrollYProgress,
+    [0.15, 0.33, 0.5, 0.66],
+    isMounted ? [0, 1, 1, 0.3] : [0, 0, 0, 0]
+  );
+
+  const opacity3 = useTransform(
+    scrollYProgress,
+    [0.5, 0.66, 0.85, 1],
+    isMounted ? [0, 1, 1, 1] : [0, 0, 0, 0]
+  );
+
+  // Scale transforms for subtle zoom effect
+  const scale1 = useTransform(
+    scrollYProgress,
+    [0, 0.33],
+    isMounted ? [1, 1.1] : [1, 1]
+  );
+
+  const scale2 = useTransform(
+    scrollYProgress,
+    [0.33, 0.66],
+    isMounted ? [1, 1.1] : [1, 1]
+  );
+
+  const scale3 = useTransform(
+    scrollYProgress,
+    [0.66, 1],
+    isMounted ? [1, 1.1] : [1, 1]
+  );
+
+  if (!isMounted) {
+    return (
+      <div className="relative bg-[#8b5a3c]" style={{ height: "300vh" }}>
+        <div className="sticky top-0 h-screen flex items-center justify-center">
+          <div className="text-white text-xl">Loading Projects...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
       ref={containerRef}
-      className="relative bg-gray-900"
+      className="relative bg-[#8b5a3c]"
       style={{ height: `${projects.length * 100}vh` }}
     >
-      {/* Background elements for visual appeal */}
-      <div className="absolute inset-0 overflow-hidden opacity-20">
-        <div className="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-b from-blue-500 to-transparent"></div>
-        <div className="absolute top-1/3 left-0 w-full h-1/3 bg-gradient-to-b from-purple-500 to-transparent"></div>
-        <div className="absolute top-2/3 left-0 w-full h-1/3 bg-gradient-to-b from-indigo-500 to-transparent"></div>
-      </div>
-
       <div className="sticky top-0 h-screen overflow-hidden">
         {/* Project 1 */}
-        <motion.div className="absolute inset-0" style={{ y: y1 }}>
-          <div className="relative w-full h-full">
+        <motion.div
+          className="absolute inset-0"
+          style={{
+            y: y1,
+            opacity: opacity1,
+          }}
+        >
+          <motion.div
+            className="relative w-full h-full"
+            style={{ scale: scale1 }}
+          >
             <Image
               src={projects[0].image}
               alt={projects[0].title}
               fill
               className="object-cover"
               priority
+              quality={90}
             />
-            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 bg-black/30" />
             <div className="absolute inset-0 flex items-center justify-center text-white">
-              <div className="text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-lg font-light mb-2 sm:mb-4 tracking-widest opacity-80">
+              <div className="text-center max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <motion.div
+                  className="text-lg sm:text-xl font-light mb-4 sm:mb-6 tracking-[0.2em] opacity-80 text-[#f5f0eb]"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                >
                   {projects[0].id}
-                </div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
+                </motion.div>
+                <motion.h2
+                  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light mb-6 sm:mb-8 leading-[0.9] text-white"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                >
                   {projects[0].title}
-                </h2>
-                <p className="text-base sm:text-lg md:text-xl font-light mb-8 sm:mb-12 opacity-90 max-w-2xl mx-auto">
+                </motion.h2>
+                <motion.p
+                  className="text-lg sm:text-xl md:text-2xl font-light mb-10 sm:mb-12 opacity-90 max-w-3xl mx-auto leading-relaxed text-[#f5f0eb]"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.6 }}
+                >
                   {projects[0].subtitle}
-                </p>
-                <button className="bg-white/10 backdrop-blur-sm text-white px-6 py-3 sm:px-8 sm:py-4 rounded-full font-medium text-base sm:text-lg border border-white/20 hover:bg-white/20 transition-all">
+                </motion.p>
+                <motion.button
+                  className="bg-[#8b5a3c] hover:bg-[#a0664a] text-white px-8 py-4 sm:px-10 sm:py-5 rounded-full font-medium text-lg sm:text-xl border-2 border-white/20 hover:border-white/40 transition-all duration-300 backdrop-blur-sm"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.8 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   View Project
-                </button>
+                </motion.button>
               </div>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
 
         {/* Project 2 */}
-        <motion.div className="absolute inset-0" style={{ y: y2 }}>
-          <div className="relative w-full h-full">
+        <motion.div
+          className="absolute inset-0"
+          style={{
+            y: y2,
+            opacity: opacity2,
+          }}
+        >
+          <motion.div
+            className="relative w-full h-full"
+            style={{ scale: scale2 }}
+          >
             <Image
               src={projects[1].image}
               alt={projects[1].title}
               fill
               className="object-cover"
+              quality={90}
             />
-            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 bg-black/30" />
             <div className="absolute inset-0 flex items-center justify-center text-white">
-              <div className="text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-lg font-light mb-2 sm:mb-4 tracking-widest opacity-80">
+              <div className="text-center max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-lg sm:text-xl font-light mb-4 sm:mb-6 tracking-[0.2em] opacity-80 text-[#f5f0eb]">
                   {projects[1].id}
                 </div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
+                <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light mb-6 sm:mb-8 leading-[0.9] text-white">
                   {projects[1].title}
                 </h2>
-                <p className="text-base sm:text-lg md:text-xl font-light mb-8 sm:mb-12 opacity-90 max-w-2xl mx-auto">
+                <p className="text-lg sm:text-xl md:text-2xl font-light mb-10 sm:mb-12 opacity-90 max-w-3xl mx-auto leading-relaxed text-[#f5f0eb]">
                   {projects[1].subtitle}
                 </p>
-                <button className="bg-white/10 backdrop-blur-sm text-white px-6 py-3 sm:px-8 sm:py-4 rounded-full font-medium text-base sm:text-lg border border-white/20 hover:bg-white/20 transition-all">
+                <button className="bg-[#8b5a3c] hover:bg-[#a0664a] text-white px-8 py-4 sm:px-10 sm:py-5 rounded-full font-medium text-lg sm:text-xl border-2 border-white/20 hover:border-white/40 transition-all duration-300 backdrop-blur-sm">
                   View Project
                 </button>
               </div>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
 
         {/* Project 3 */}
-        <motion.div className="absolute inset-0" style={{ y: y3 }}>
-          <div className="relative w-full h-full">
+        <motion.div
+          className="absolute inset-0"
+          style={{
+            y: y3,
+            opacity: opacity3,
+          }}
+        >
+          <motion.div
+            className="relative w-full h-full"
+            style={{ scale: scale3 }}
+          >
             <Image
               src={projects[2].image}
               alt={projects[2].title}
               fill
               className="object-cover"
+              quality={90}
             />
-            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 bg-black/30" />
             <div className="absolute inset-0 flex items-center justify-center text-white">
-              <div className="text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-lg font-light mb-2 sm:mb-4 tracking-widest opacity-80">
+              <div className="text-center max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-lg sm:text-xl font-light mb-4 sm:mb-6 tracking-[0.2em] opacity-80 text-[#f5f0eb]">
                   {projects[2].id}
                 </div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
+                <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light mb-6 sm:mb-8 leading-[0.9] text-white">
                   {projects[2].title}
                 </h2>
-                <p className="text-base sm:text-lg md:text-xl font-light mb-8 sm:mb-12 opacity-90 max-w-2xl mx-auto">
+                <p className="text-lg sm:text-xl md:text-2xl font-light mb-10 sm:mb-12 opacity-90 max-w-3xl mx-auto leading-relaxed text-[#f5f0eb]">
                   {projects[2].subtitle}
                 </p>
-                <button className="bg-white/10 backdrop-blur-sm text-white px-6 py-3 sm:px-8 sm:py-4 rounded-full font-medium text-base sm:text-lg border border-white/20 hover:bg-white/20 transition-all">
+                <button className="bg-[#8b5a3c] hover:bg-[#a0664a] text-white px-8 py-4 sm:px-10 sm:py-5 rounded-full font-medium text-lg sm:text-xl border-2 border-white/20 hover:border-white/40 transition-all duration-300 backdrop-blur-sm">
                   View Project
                 </button>
               </div>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
-      </div>
-
-      {/* Scroll indicator */}
-      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex flex-col items-center">
-        <div className="text-white text-sm mb-2">Scroll to explore</div>
-        <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-            className="w-1 h-3 bg-white rounded-full mt-2"
-          />
-        </div>
       </div>
     </div>
   );
