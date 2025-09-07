@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Archivo } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/shared/Header";
+import Footer from "@/components/shared/Footer";
 
 const archivoSans = Archivo({
   variable: "--font-archivo-sans",
@@ -31,6 +32,7 @@ export default function RootLayout({
       <body className={`${archivoSans.variable} antialiased`}>
         <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );
