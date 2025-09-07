@@ -11,37 +11,37 @@ const Expertise = () => {
       id: 1,
       number: "01",
       title: "Custom Furniture Design",
-      image: "/api/placeholder/600/500", // Replace with your actual image URL
+      image: "/images/expertise.jpeg", // Replace with your actual image URL
     },
     {
       id: 2,
       number: "02",
       title: "Room Decoration & Styling",
-      image: "/api/placeholder/600/500", // Replace with your actual image URL
+      image: "/images/decor.jpeg", // Replace with your actual image URL
     },
     {
       id: 3,
       number: "03",
       title: "Space Planning & Interior Layout",
-      image: "/api/placeholder/600/500", // Replace with your actual image URL
+      image: "/images/interior.jpeg", // Replace with your actual image URL
     },
     {
       id: 4,
       number: "04",
       title: "Home Renovations & Remodeling",
-      image: "/api/placeholder/600/500", // Replace with your actual image URL
+      image: "/images/home.jpeg", // Replace with your actual image URL
     },
     {
       id: 5,
       number: "05",
       title: "Lighting Design",
-      image: "/api/placeholder/600/500", // Replace with your actual image URL
+      image: "/images/lighiting.jpeg", // Replace with your actual image URL
     },
     {
       id: 6,
       number: "06",
       title: "Virtual Interior Design Consultations",
-      image: "/api/placeholder/600/500", // Replace with your actual image URL
+      image: "/images/virtual.jpeg", // Replace with your actual image URL
     },
   ];
 

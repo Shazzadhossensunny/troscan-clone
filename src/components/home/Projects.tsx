@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { useRef, useState, useEffect } from "react";
 
@@ -50,9 +50,9 @@ const Projects = () => {
     },
   ];
 
-  // Always call hooks unconditionally
+  // Fix the TypeScript error by casting the ref to the correct type
   const { scrollYProgress } = useScroll({
-    target: isMounted ? containerRef : null,
+    target: containerRef as React.RefObject<HTMLElement>,
     offset: ["start start", "end start"],
   });
 
@@ -60,57 +60,38 @@ const Projects = () => {
   const y1 = useTransform(
     scrollYProgress,
     [0, 0.33, 0.66, 1],
-    isMounted ? [0, -windowHeight, -windowHeight, -windowHeight] : [0, 0, 0, 0]
+    [0, -windowHeight, -windowHeight, -windowHeight]
   );
 
   const y2 = useTransform(
     scrollYProgress,
     [0, 0.33, 0.66, 1],
-    isMounted ? [windowHeight, 0, -windowHeight, -windowHeight] : [0, 0, 0, 0]
+    [windowHeight, 0, -windowHeight, -windowHeight]
   );
 
   const y3 = useTransform(
     scrollYProgress,
     [0, 0.33, 0.66, 1],
-    isMounted ? [windowHeight, windowHeight, 0, 0] : [0, 0, 0, 0]
+    [windowHeight, windowHeight, 0, 0]
   );
 
   // Opacity transforms for smooth fade transitions
   const opacity1 = useTransform(
     scrollYProgress,
     [0, 0.15, 0.33, 0.5],
-    isMounted ? [1, 1, 0.3, 0] : [1, 1, 1, 1]
+    [1, 1, 0.3, 0]
   );
 
   const opacity2 = useTransform(
     scrollYProgress,
     [0.15, 0.33, 0.5, 0.66],
-    isMounted ? [0, 1, 1, 0.3] : [0, 0, 0, 0]
+    [0, 1, 1, 0.3]
   );
 
   const opacity3 = useTransform(
     scrollYProgress,
     [0.5, 0.66, 0.85, 1],
-    isMounted ? [0, 1, 1, 1] : [0, 0, 0, 0]
-  );
-
-  // Scale transforms for subtle zoom effect
-  const scale1 = useTransform(
-    scrollYProgress,
-    [0, 0.33],
-    isMounted ? [1, 1.1] : [1, 1]
-  );
-
-  const scale2 = useTransform(
-    scrollYProgress,
-    [0.33, 0.66],
-    isMounted ? [1, 1.1] : [1, 1]
-  );
-
-  const scale3 = useTransform(
-    scrollYProgress,
-    [0.66, 1],
-    isMounted ? [1, 1.1] : [1, 1]
+    [0, 1, 1, 1]
   );
 
   if (!isMounted) {
@@ -138,58 +119,29 @@ const Projects = () => {
             opacity: opacity1,
           }}
         >
-          <motion.div
-            className="relative w-full h-full"
-            style={{ scale: scale1 }}
-          >
-            <Image
-              src={projects[0].image}
-              alt={projects[0].title}
-              fill
-              className="object-cover"
-              priority
-              quality={90}
+          <div className="relative w-full h-full">
+            <div
+              className="absolute inset-0 bg-cover bg-center bg-fixed"
+              style={{ backgroundImage: `url(${projects[0].image})` }}
             />
             <div className="absolute inset-0 bg-black/30" />
             <div className="absolute inset-0 flex items-center justify-center text-white">
               <div className="text-center max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                <motion.div
-                  className="text-lg sm:text-xl font-light mb-4 sm:mb-6 tracking-[0.2em] opacity-80 text-[#f5f0eb]"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
-                >
+                <div className="text-lg sm:text-xl font-light mb-4 sm:mb-6 tracking-[0.2em] opacity-80 text-[#f5f0eb]">
                   {projects[0].id}
-                </motion.div>
-                <motion.h2
-                  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light mb-6 sm:mb-8 leading-[0.9] text-white"
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.4 }}
-                >
+                </div>
+                <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light mb-6 sm:mb-8 leading-[0.9] text-white">
                   {projects[0].title}
-                </motion.h2>
-                <motion.p
-                  className="text-lg sm:text-xl md:text-2xl font-light mb-10 sm:mb-12 opacity-90 max-w-3xl mx-auto leading-relaxed text-[#f5f0eb]"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.6 }}
-                >
+                </h2>
+                <p className="text-lg sm:text-xl md:text-2xl font-light mb-10 sm:mb-12 opacity-90 max-w-3xl mx-auto leading-relaxed text-[#f5f0eb]">
                   {projects[0].subtitle}
-                </motion.p>
-                <motion.button
-                  className="bg-[#8b5a3c] hover:bg-[#a0664a] text-white px-8 py-4 sm:px-10 sm:py-5 rounded-full font-medium text-lg sm:text-xl border-2 border-white/20 hover:border-white/40 transition-all duration-300 backdrop-blur-sm"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.8 }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
+                </p>
+                <button className="bg-[#8b5a3c] hover:bg-[#a0664a] text-white px-8 py-4 sm:px-10 sm:py-5 rounded-full font-medium text-lg sm:text-xl border-2 border-white/20 hover:border-white/40 transition-all duration-300 backdrop-blur-sm">
                   View Project
-                </motion.button>
+                </button>
               </div>
             </div>
-          </motion.div>
+          </div>
         </motion.div>
 
         {/* Project 2 */}
@@ -200,16 +152,10 @@ const Projects = () => {
             opacity: opacity2,
           }}
         >
-          <motion.div
-            className="relative w-full h-full"
-            style={{ scale: scale2 }}
-          >
-            <Image
-              src={projects[1].image}
-              alt={projects[1].title}
-              fill
-              className="object-cover"
-              quality={90}
+          <div className="relative w-full h-full">
+            <div
+              className="absolute inset-0 bg-cover bg-center bg-fixed"
+              style={{ backgroundImage: `url(${projects[1].image})` }}
             />
             <div className="absolute inset-0 bg-black/30" />
             <div className="absolute inset-0 flex items-center justify-center text-white">
@@ -228,7 +174,7 @@ const Projects = () => {
                 </button>
               </div>
             </div>
-          </motion.div>
+          </div>
         </motion.div>
 
         {/* Project 3 */}
@@ -239,16 +185,10 @@ const Projects = () => {
             opacity: opacity3,
           }}
         >
-          <motion.div
-            className="relative w-full h-full"
-            style={{ scale: scale3 }}
-          >
-            <Image
-              src={projects[2].image}
-              alt={projects[2].title}
-              fill
-              className="object-cover"
-              quality={90}
+          <div className="relative w-full h-full">
+            <div
+              className="absolute inset-0 bg-cover bg-center bg-fixed"
+              style={{ backgroundImage: `url(${projects[2].image})` }}
             />
             <div className="absolute inset-0 bg-black/30" />
             <div className="absolute inset-0 flex items-center justify-center text-white">
@@ -267,7 +207,7 @@ const Projects = () => {
                 </button>
               </div>
             </div>
-          </motion.div>
+          </div>
         </motion.div>
       </div>
     </div>
