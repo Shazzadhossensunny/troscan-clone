@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { Menu, X } from "lucide-react";
 
 const Header = () => {
@@ -27,35 +28,38 @@ const Header = () => {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300`}
-      style={{ width: "750px", height: "60px" }}
+      className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[95%] max-w-[750px]"
     >
       <nav
-        className={`w-full h-full rounded-full px-6 flex items-center justify-between transition-all duration-300 ${
-          scrolled
-            ? "bg-white/95 backdrop-blur-md shadow-xl"
-            : "bg-white/90 backdrop-blur-md"
-        }`}
+        className="flex items-center justify-between w-full h-[60px] transition-all duration-300"
+        style={{
+          backgroundColor: scrolled
+            ? "rgba(248, 237, 227, 1)"
+            : "rgba(248, 237, 227)",
+          borderRadius: "8px",
+          boxShadow: "rgba(0, 0, 0, 0.2) 0px 0px 50px 0px",
+          padding: "5px 5px 5px 20px",
+        }}
       >
         {/* Logo */}
         <motion.div
           whileHover={{ scale: 1.05 }}
-          className="text-xl font-bold text-primary flex-shrink-0"
+          className="text-xl md:text-2xl font-bold text-[#8d493a] flex-shrink-0"
         >
-          Troscan
+          <Link href="/">Troscán</Link>
         </motion.div>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-8">
           {navItems.map((item) => (
-            <motion.a
-              key={item.name}
-              href={item.href}
-              whileHover={{ scale: 1.05 }}
-              className="text-primary hover:text-primary-hover transition-colors duration-300 font-medium"
-            >
-              {item.name}
-            </motion.a>
+            <motion.div key={item.name} whileHover={{ scale: 1.05 }}>
+              <Link
+                href={item.href}
+                className="text-[#8d493a] text-base hover:text-[#b85842] transition-colors duration-300 font-bold"
+              >
+                {item.name}
+              </Link>
+            </motion.div>
           ))}
         </div>
 
@@ -63,13 +67,17 @@ const Header = () => {
         <motion.button
           whileHover={{ scale: 1.05, backgroundColor: "#b85842" }}
           whileTap={{ scale: 0.95 }}
-          className="bg-primary text-white px-6 py-2 rounded-full font-medium transition-all duration-300 flex-shrink-0"
+          className="bg-[#8d493a] text-white px-6 py-3 rounded-[5px] font-medium transition-all duration-300 flex-shrink-0 text-[16px]"
         >
           Contact us
         </motion.button>
 
         {/* Mobile Menu Button */}
-        <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
+        <button
+          aria-label="Toggle Menu"
+          className="md:hidden ml-2"
+          onClick={() => setIsOpen(!isOpen)}
+        >
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
 
@@ -82,14 +90,14 @@ const Header = () => {
             className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl p-4 md:hidden"
           >
             {navItems.map((item) => (
-              <a
+              <Link
                 key={item.name}
                 href={item.href}
-                className="block py-3 text-primary hover:text-primary-hover transition-colors duration-300 font-medium"
+                className="block py-3 text-[#403A34] hover:text-[#b85842] transition-colors duration-300 font-medium"
                 onClick={() => setIsOpen(false)}
               >
                 {item.name}
-              </a>
+              </Link>
             ))}
           </motion.div>
         )}

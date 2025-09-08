@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 
@@ -13,25 +13,31 @@ const CallToAction = () => {
   }, []);
 
   // Scroll progress - only use after component is mounted
-
   const scrollOpts =
     ready && containerRef.current
       ? { target: containerRef, offset: ["start start", "end end"] }
       : undefined;
   const { scrollYProgress } = useScroll(scrollOpts as any);
 
-  // Content moves from bottom → center → stays
-  const contentY = useTransform(
-    scrollYProgress,
-    [0, 0.5, 1],
-    ready ? [300, 0, 0] : [300, 300, 300]
+  // Smooth spring-based animation for delayed effect
+  const springConfig = { stiffness: 80, damping: 20, mass: 0.5 };
+
+  const contentY = useSpring(
+    useTransform(
+      scrollYProgress,
+      [0, 0.5, 1],
+      ready ? [400, 0, 0] : [400, 400, 400]
+    ),
+    springConfig
   );
 
-  // Opacity animation for smooth appearance
-  const contentOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.3, 0.5],
-    ready ? [0, 0.5, 1] : [0, 0, 0]
+  const contentOpacity = useSpring(
+    useTransform(
+      scrollYProgress,
+      [0, 0.3, 0.5],
+      ready ? [0, 0.5, 1] : [0, 0, 0]
+    ),
+    springConfig
   );
 
   return (
@@ -53,14 +59,14 @@ const CallToAction = () => {
             y: contentY,
             opacity: contentOpacity,
           }}
-          className="absolute inset-0 flex items-center justify-center"
+          className="absolute inset-0 flex items-center justify-center px-4 sm:px-6"
         >
-          <div className="bg-[#f5f0eb]/95 rounded-3xl p-10 max-w-2xl text-center shadow-xl">
-            <h2 className="text-2xl md:text-4xl font-light text-[#8b5a3c] mb-6">
+          <div className="bg-[#f5f0eb] rounded-[10px] p-14 sm:p-16 md:p-20 max-w-3xl text-center shadow-xl">
+            <h2 className="text-2xl md:text-[28px] text-[#8b5a3c] font-normal mb-6">
               Ready to reimagine your space? Connect with us at Troscán to bring
               your vision to life with our expertise in design and decoration.
             </h2>
-            <button className="bg-[#8b5a3c] hover:bg-[#a0664a] text-white px-8 py-4 rounded-full font-medium text-lg transition-all">
+            <button className="bg-[#8d493a] hover:bg-[#a0664a] text-white px-6 py-4 rounded-[5px] font-medium text-base transition-all">
               Get in Touch
             </button>
           </div>

@@ -11,12 +11,12 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 const IMAGES = [
-  "/images/g1.jpeg",
-  "/images/g2.jpeg",
-  "/images/g3.jpeg",
-  "/images/g4.jpeg",
-  "/images/g5.jpeg",
-  "/images/g6.jpeg",
+  { src: "/images/g1.jpeg", alt: "Luxury Living Room 1" },
+  { src: "/images/g2.jpeg", alt: "Luxury Living Room 2" },
+  { src: "/images/g3.jpeg", alt: "Luxury Living Room 3" },
+  { src: "/images/g4.jpeg", alt: "Luxury Bedroom 1" },
+  { src: "/images/g5.jpeg", alt: "Luxury Bedroom 2" },
+  { src: "/images/g6.jpeg", alt: "Luxury Kitchen Design" },
 ];
 
 export default function Gallery() {
@@ -32,10 +32,8 @@ export default function Gallery() {
   const STEP_A = 0.33;
   const STEP_B = 0.66;
 
-  // phase (0 = stack, 1 = spread, 2 = text)
   const phase = useMotionValue(0);
 
-  // ✅ Smooth spring-based phase
   const phaseSpring = useSpring(phase, {
     stiffness: 80,
     damping: 20,
@@ -54,12 +52,10 @@ export default function Gallery() {
     });
   }, [scrollYProgress, phase]);
 
-  // Spread grid positions
   const spreadX = (i: number) =>
     [-((1920 - 100) / 2 - 200), 0, (1920 - 100) / 2 - 200][i % 3];
   const spreadY = (i: number) => (i < 3 ? -250 : 250);
 
-  // Stack offsets
   const stackOffsets = [
     { x: 0, y: 0 },
     { x: 60, y: 10 },
@@ -69,24 +65,17 @@ export default function Gallery() {
     { x: -180, y: -80 },
   ];
 
-  // Text animation (phase 1 → 2)
   const textOpacity = useTransform(phaseSpring, [1, 2], [0, 1]);
   const textY = useTransform(phaseSpring, [1, 2], [150, 0]);
 
   return (
     <section
       ref={sectionRef}
-      className="relative h-[300vh] bg-[#f5f1eb]"
-      style={{
-        maxWidth: "1920px",
-        margin: "0 auto",
-        width: "100%",
-        padding: "0 50px",
-      }}
+      className="relative h-[300vh] w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12"
     >
       <div className="sticky top-0 h-screen overflow-hidden">
         <div className="relative h-full w-full flex items-center justify-center">
-          {IMAGES.map((src, i) => {
+          {IMAGES.map((image, i) => {
             const sx = stackOffsets[i].x;
             const sy = stackOffsets[i].y;
             const gx = spreadX(i);
@@ -94,22 +83,22 @@ export default function Gallery() {
 
             return (
               <motion.div
-                key={src}
+                key={image.src}
                 style={{
                   x: useTransform(phaseSpring, [0, 1, 2], [sx, gx, gx]),
                   y: useTransform(phaseSpring, [0, 1, 2], [sy, gy, gy]),
                   scale: useTransform(phaseSpring, [0, 1, 2], [1, 1.05, 1.05]),
-                  opacity: 1,
                   zIndex: IMAGES.length - i,
+                  willChange: "transform",
                 }}
                 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
-                           w-[300px] sm:w-[340px] md:w-[360px] lg:w-[380px]
-                           h-[200px] sm:h-[220px] md:h-[240px] lg:h-[260px]
+                           w-[260px] sm:w-[300px] md:w-[340px] lg:w-[380px]
+                           h-[180px] sm:h-[200px] md:h-[220px] lg:h-[260px]
                            rounded-xl shadow-xl overflow-hidden"
               >
                 <Image
-                  src={src}
-                  alt={`Interior ${i + 1}`}
+                  src={image.src}
+                  alt={image.alt}
                   fill
                   className="object-cover"
                   priority={i === 0}
@@ -122,9 +111,9 @@ export default function Gallery() {
           <motion.div
             style={{ opacity: textOpacity, y: textY }}
             className="pointer-events-none absolute left-1/2 top-1/2
-                       -translate-x-1/2 -translate-y-1/2 text-center px-6 max-w-4xl"
+                       -translate-x-1/2 -translate-y-1/2 text-center px-4 sm:px-6 max-w-4xl"
           >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#8d493a] leading-snug">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-[40px] font-medium text-[#8d493a] leading-snug">
               Transforming spaces with style,
               <br />
               through Troscán&apos;s exquisite design expertise.

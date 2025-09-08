@@ -16,11 +16,11 @@ const Hero = () => {
           priority
         />
         {/* Overlay for better text readability */}
-        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute inset-0 bg-black/30" />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-12 text-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 md:px-12 text-center">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -32,11 +32,9 @@ const Hero = () => {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1.3, ease: "easeOut" }}
-            className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-16 leading-tight"
+            className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-normal text-white mb-12 sm:mb-16 leading-tight"
           >
-            Timeless Comfort &
-            <br />
-            Endless Luxury
+            Timeless Comfort & <br /> Endless Luxury
           </motion.h1>
 
           {/* Buttons */}
@@ -46,18 +44,27 @@ const Hero = () => {
             transition={{ duration: 1, delay: 1.6, ease: "easeOut" }}
             className="flex flex-col sm:flex-row gap-6 justify-center items-center"
           >
+            {/* Our Vision Button */}
             <motion.button
-              whileHover={{ scale: 1.05, backgroundColor: "#f8ede3" }}
+              whileHover={{
+                scale: 1.05,
+                backgroundColor: "rgba(248, 237, 227, 0.7)",
+              }}
               whileTap={{ scale: 0.95 }}
-              className="bg-button-bg text-primary px-8 py-4 rounded-full font-medium transition-all duration-300 text-lg min-w-[180px]"
+              className="bg-[#f8ede3] text-primary px-6 py-4 rounded-[5px] font-medium transition-all duration-300 text-base sm:text-lg min-w-[180px]"
             >
               Our Vision
             </motion.button>
 
+            {/* Explore Expertise Button */}
             <motion.button
-              whileHover={{ scale: 1.05, backgroundColor: "#b85842" }}
+              whileHover={{
+                scale: 1.05,
+                backgroundColor: "#f8ede3",
+                color: "#8d493a",
+              }}
               whileTap={{ scale: 0.95 }}
-              className="bg-primary text-white px-8 py-4 rounded-full font-medium transition-all duration-300 text-lg min-w-[180px]"
+              className="bg-transparent border border-[#f8ede3] text-white px-6 py-4 rounded-[5px] font-medium transition-all duration-300 text-base sm:text-lg min-w-[180px]"
             >
               Explore Expertise
             </motion.button>

@@ -1,61 +1,69 @@
+"use client";
+
+import Link from "next/link";
+
 const Footer = () => {
   return (
-    <footer className="bg-[#8b5a3c] text-white py-16 px-8">
-      <div className="max-w-7xl mx-auto">
+    <footer className="bg-[#8d493a] text-white py-16 px-4 sm:px-6 lg:px-12 xl:px-16">
+      <div className="max-w-[1920px] mx-auto w-full">
         {/* Main Content */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 max-w-[1200px] mx-auto">
           {/* Logo */}
-          <h1 className="text-3xl lg:text-4xl font-light mb-16">Troscán</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-10">Troscán</h1>
 
           {/* Footer Links Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-20">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-20">
             {/* Sitemap Column */}
             <div>
-              <h3 className="text-lg font-medium mb-8 opacity-80">Sitemap</h3>
-              <ul className="space-y-4">
+              <h3 className="text-sm sm:text-base font-medium mb-6 opacity-80">
+                Sitemap
+              </h3>
+              <ul className="space-y-3 sm:space-y-4">
                 <li>
-                  <a
+                  <Link
                     href="/about"
-                    className="text-lg hover:opacity-80 transition-opacity duration-300"
+                    className="text-base sm:text-lg hover:opacity-80 transition-opacity duration-300"
                   >
                     About
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/projects"
-                    className="text-lg hover:opacity-80 transition-opacity duration-300"
+                    className="text-base sm:text-lg hover:opacity-80 transition-opacity duration-300"
                   >
                     Projects
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/news"
-                    className="text-lg hover:opacity-80 transition-opacity duration-300"
+                    className="text-base sm:text-lg hover:opacity-80 transition-opacity duration-300"
                   >
                     News
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/contact"
-                    className="text-lg hover:opacity-80 transition-opacity duration-300"
+                    className="text-base sm:text-lg hover:opacity-80 transition-opacity duration-300"
                   >
                     Contact
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
 
             {/* Socials Column */}
             <div>
-              <h3 className="text-lg font-medium mb-8 opacity-80">Socials</h3>
-              <ul className="space-y-4">
+              <h3 className="text-sm sm:text-base font-medium mb-6 opacity-80">
+                Socials
+              </h3>
+              <ul className="space-y-3 sm:space-y-4">
                 <li>
                   <a
                     href="#"
-                    className="text-lg hover:opacity-80 transition-opacity duration-300"
+                    className="text-base sm:text-lg hover:opacity-80 transition-opacity duration-300"
                   >
                     Facebook
                   </a>
@@ -63,7 +71,7 @@ const Footer = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-lg hover:opacity-80 transition-opacity duration-300"
+                    className="text-base sm:text-lg hover:opacity-80 transition-opacity duration-300"
                   >
                     Instagram
                   </a>
@@ -71,7 +79,7 @@ const Footer = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-lg hover:opacity-80 transition-opacity duration-300"
+                    className="text-base sm:text-lg hover:opacity-80 transition-opacity duration-300"
                   >
                     LinkedIn
                   </a>
@@ -79,7 +87,7 @@ const Footer = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-lg hover:opacity-80 transition-opacity duration-300"
+                    className="text-base sm:text-lg hover:opacity-80 transition-opacity duration-300"
                   >
                     Twitter
                   </a>
@@ -89,12 +97,14 @@ const Footer = () => {
 
             {/* More Column */}
             <div>
-              <h3 className="text-lg font-medium mb-8 opacity-80">More</h3>
-              <ul className="space-y-4">
+              <h3 className="text-sm sm:text-base font-medium mb-6 opacity-80">
+                More
+              </h3>
+              <ul className="space-y-3 sm:space-y-4">
                 <li>
                   <a
                     href="#"
-                    className="text-lg hover:opacity-80 transition-opacity duration-300"
+                    className="text-base sm:text-lg hover:opacity-80 transition-opacity duration-300"
                   >
                     License
                   </a>
@@ -102,7 +112,7 @@ const Footer = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-lg hover:opacity-80 transition-opacity duration-300"
+                    className="text-base sm:text-lg hover:opacity-80 transition-opacity duration-300"
                   >
                     Grainient
                   </a>
@@ -110,7 +120,7 @@ const Footer = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-lg hover:opacity-80 transition-opacity duration-300"
+                    className="text-base sm:text-lg hover:opacity-80 transition-opacity duration-300"
                   >
                     Inspirux
                   </a>
@@ -118,7 +128,7 @@ const Footer = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-lg hover:opacity-80 transition-opacity duration-300"
+                    className="text-base sm:text-lg hover:opacity-80 transition-opacity duration-300"
                   >
                     Store
                   </a>
@@ -130,15 +140,10 @@ const Footer = () => {
 
         {/* Bottom Section */}
         <div className="border-t border-white/20 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm opacity-80">© 2025, All rights reserved</p>
-
-            {/* Made in Framer badge (optional) */}
-            <div className="mt-4 md:mt-0">
-              <span className="text-sm opacity-60 bg-white/10 px-3 py-1 rounded-full">
-                ⚡ Made in Framer
-              </span>
-            </div>
+          <div className="flex justify-center items-center">
+            <p className="text-sm sm:text-base opacity-80">
+              © 2025, All rights reserved
+            </p>
           </div>
         </div>
       </div>
