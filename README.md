@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Troscan Clone
+
+A pixel-perfect landing page clone of the [Troscan Framer website](https://troscan.framer.website/), built using modern frontend technologies. This project was completed as part of a frontend developer skill assessment at Ena Ema Technologies.
+
+## Overview
+
+This project replicates the Troscan landing page with exact visual fidelity. It features a responsive layout, smooth scroll-based animations, hover effects, and a modular, maintainable codebase.
+
+**Live Demo:** [https://troscan-clone-lyart.vercel.app/](https://troscan-clone-lyart.vercel.app/)
+**GitHub Repository:** [https://github.com/Shazzadhossensunny/troscan-clone](https://github.com/Shazzadhossensunny/troscan-clone)
+
+## 🛠️ Tech Stack
+
+- **Framework:** Next.js
+- **Styling:** Tailwind CSS
+- **Animations:** Framer Motion / CSS transitions
+- **Icons:** Lucide React
+- **Hosting:** Vercel
+- **Language:** TypeScript
+
+## Features
+
+- Pixel-perfect replication of the original website
+- Fully responsive design for mobile, tablet, and desktop
+- Scroll-based animations and transitions
+- Hover effects on interactive elements
+- Clean, reusable, and modular code
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js v20+
+- npm
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/Shazzadhossensunny/troscan-clone.git
+```
+
+2. Navigate to the project folder:
+
+```bash
+cd troscan-clone
+```
+
+3. Install dependencies:
+
+```bash
+npm install
+```
+
+### Running Locally
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the project.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Building for Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## Notes
 
-To learn more about Next.js, take a look at the following resources:
+This project demonstrates the ability to:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Work with modern frontend frameworks
+- Implement responsive designs
+- Use animation libraries for interactive UIs
+- Maintain clean and modular code
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---

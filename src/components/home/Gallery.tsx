@@ -1,6 +1,12 @@
 "use client";
 
-import { motion, useScroll, useMotionValue, useTransform } from "framer-motion";
+import {
+  motion,
+  useScroll,
+  useMotionValue,
+  useTransform,
+  useSpring,
+} from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
@@ -26,8 +32,15 @@ export default function Gallery() {
   const STEP_A = 0.33;
   const STEP_B = 0.66;
 
-  // Motion values (snap effect)
-  const phase = useMotionValue(0); // 0 = stack, 1 = spread, 2 = text
+  // phase (0 = stack, 1 = spread, 2 = text)
+  const phase = useMotionValue(0);
+
+  // ✅ Smooth spring-based phase
+  const phaseSpring = useSpring(phase, {
+    stiffness: 80,
+    damping: 20,
+    mass: 0.5,
+  });
 
   useEffect(() => {
     return scrollYProgress.on("change", (latest) => {
@@ -41,12 +54,12 @@ export default function Gallery() {
     });
   }, [scrollYProgress, phase]);
 
-  // Spread grid → inside 1920px with 50px LR padding, 0px TB padding
+  // Spread grid positions
   const spreadX = (i: number) =>
     [-((1920 - 100) / 2 - 200), 0, (1920 - 100) / 2 - 200][i % 3];
-  const spreadY = (i: number) => (i < 3 ? -300 : 300);
+  const spreadY = (i: number) => (i < 3 ? -250 : 250);
 
-  // Initial stack → overlap
+  // Stack offsets
   const stackOffsets = [
     { x: 0, y: 0 },
     { x: 60, y: 10 },
@@ -56,9 +69,9 @@ export default function Gallery() {
     { x: -180, y: -80 },
   ];
 
-  // Text animation (only visible in phase = 2)
-  const textOpacity = useTransform(phase, [1, 2], [0, 1]);
-  const textY = useTransform(phase, [1, 2], [50, 0]);
+  // Text animation (phase 1 → 2)
+  const textOpacity = useTransform(phaseSpring, [1, 2], [0, 1]);
+  const textY = useTransform(phaseSpring, [1, 2], [150, 0]);
 
   return (
     <section
@@ -83,13 +96,12 @@ export default function Gallery() {
               <motion.div
                 key={src}
                 style={{
-                  x: useTransform(phase, [0, 1, 2], [sx, gx, gx]),
-                  y: useTransform(phase, [0, 1, 2], [sy, gy, gy]),
-                  scale: useTransform(phase, [0, 1, 2], [1, 1.05, 1]),
+                  x: useTransform(phaseSpring, [0, 1, 2], [sx, gx, gx]),
+                  y: useTransform(phaseSpring, [0, 1, 2], [sy, gy, gy]),
+                  scale: useTransform(phaseSpring, [0, 1, 2], [1, 1.05, 1.05]),
                   opacity: 1,
                   zIndex: IMAGES.length - i,
                 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
                 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
                            w-[300px] sm:w-[340px] md:w-[360px] lg:w-[380px]
                            h-[200px] sm:h-[220px] md:h-[240px] lg:h-[260px]
@@ -110,7 +122,7 @@ export default function Gallery() {
           <motion.div
             style={{ opacity: textOpacity, y: textY }}
             className="pointer-events-none absolute left-1/2 top-1/2
-                       -translate-x-1/2 -translate-y-[90%] text-center px-6 max-w-4xl"
+                       -translate-x-1/2 -translate-y-1/2 text-center px-6 max-w-4xl"
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#8d493a] leading-snug">
               Transforming spaces with style,
