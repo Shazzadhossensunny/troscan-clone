@@ -1,103 +1,125 @@
 "use client";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+
+import { motion, useScroll, useMotionValue, useTransform } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-const images = [
-  "/images/g1.jpeg", // Image 1 (bottom of stack)
-  "/images/g2.jpeg", // Image 2
-  "/images/g3.jpeg", // Image 3
-  "/images/g4.jpeg", // Image 4
-  "/images/g5.jpeg", // Image 5
-  "/images/g6.jpeg", // Image 6 (top of stack)
+const IMAGES = [
+  "/images/g1.jpeg",
+  "/images/g2.jpeg",
+  "/images/g3.jpeg",
+  "/images/g4.jpeg",
+  "/images/g5.jpeg",
+  "/images/g6.jpeg",
 ];
 
 export default function Gallery() {
-  const containerRef = useRef(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const { scrollYProgress } = useScroll({
-    target: containerRef,
+    target: mounted ? sectionRef : undefined,
     offset: ["start start", "end end"],
   });
 
+  const STEP_A = 0.33;
+  const STEP_B = 0.66;
+
+  // Motion values (snap effect)
+  const phase = useMotionValue(0); // 0 = stack, 1 = spread, 2 = text
+
+  useEffect(() => {
+    return scrollYProgress.on("change", (latest) => {
+      if (latest < STEP_A) {
+        phase.set(0);
+      } else if (latest < STEP_B) {
+        phase.set(1);
+      } else {
+        phase.set(2);
+      }
+    });
+  }, [scrollYProgress, phase]);
+
+  // Spread grid → inside 1920px with 50px LR padding, 0px TB padding
+  const spreadX = (i: number) =>
+    [-((1920 - 100) / 2 - 200), 0, (1920 - 100) / 2 - 200][i % 3];
+  const spreadY = (i: number) => (i < 3 ? -300 : 300);
+
+  // Initial stack → overlap
+  const stackOffsets = [
+    { x: 0, y: 0 },
+    { x: 60, y: 10 },
+    { x: -100, y: -30 },
+    { x: 180, y: -40 },
+    { x: -50, y: -100 },
+    { x: -180, y: -80 },
+  ];
+
+  // Text animation (only visible in phase = 2)
+  const textOpacity = useTransform(phase, [1, 2], [0, 1]);
+  const textY = useTransform(phase, [1, 2], [50, 0]);
+
   return (
-    <div
-      ref={containerRef}
+    <section
+      ref={sectionRef}
       className="relative h-[300vh] bg-[#f5f1eb]"
       style={{
         maxWidth: "1920px",
         margin: "0 auto",
         width: "100%",
+        padding: "0 50px",
       }}
     >
-      {/* Sticky container */}
-      <div
-        className="sticky top-0 h-screen overflow-hidden flex items-center justify-center"
-        style={{ padding: "0 50px" }}
-      >
-        {/* Images */}
-        {images.map((src, i) => {
-          // Calculate positions for grid (2 rows, 3 columns)
-          const isTopRow = i >= 3; // Images 4,5,6 go to top row
-          const colIndex = isTopRow ? i - 3 : i; // 0,1,2 position in each row
+      <div className="sticky top-0 h-screen overflow-hidden">
+        <div className="relative h-full w-full flex items-center justify-center">
+          {IMAGES.map((src, i) => {
+            const sx = stackOffsets[i].x;
+            const sy = stackOffsets[i].y;
+            const gx = spreadX(i);
+            const gy = spreadY(i);
 
-          // Grid positions
-          const finalX = (colIndex - 1) * 450; // -450, 0, 450
-          const finalY = isTopRow ? -200 : 200; // -200 for top, 200 for bottom
+            return (
+              <motion.div
+                key={src}
+                style={{
+                  x: useTransform(phase, [0, 1, 2], [sx, gx, gx]),
+                  y: useTransform(phase, [0, 1, 2], [sy, gy, gy]),
+                  scale: useTransform(phase, [0, 1, 2], [1, 1.05, 1]),
+                  opacity: 1,
+                  zIndex: IMAGES.length - i,
+                }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+                           w-[300px] sm:w-[340px] md:w-[360px] lg:w-[380px]
+                           h-[200px] sm:h-[220px] md:h-[240px] lg:h-[260px]
+                           rounded-xl shadow-xl overflow-hidden"
+              >
+                <Image
+                  src={src}
+                  alt={`Interior ${i + 1}`}
+                  fill
+                  className="object-cover"
+                  priority={i === 0}
+                />
+              </motion.div>
+            );
+          })}
 
-          // Initial stacked positions (more spread out)
-          const initialX = i * 80; // Much more spread
-          const initialY = i * 60;
-          const initialRotate = i * 20; // More rotation
-
-          return (
-            <motion.div
-              key={i}
-              style={{
-                x: useTransform(scrollYProgress, [0, 0.6], [initialX, finalX]),
-                y: useTransform(scrollYProgress, [0, 0.6], [initialY, finalY]),
-                rotate: useTransform(
-                  scrollYProgress,
-                  [0, 0.6],
-                  [initialRotate, 0]
-                ),
-                scale: useTransform(scrollYProgress, [0, 0.6], [1, 1]),
-                zIndex: images.length - i, // Top image has highest zIndex
-              }}
-              className="absolute w-[300px] sm:w-[340px] md:w-[380px] lg:w-[420px]
-                         h-[200px] sm:h-[220px] md:h-[250px] lg:h-[280px]
-                         rounded-2xl shadow-2xl overflow-hidden"
-            >
-              <Image
-                src={src}
-                alt={`Interior design ${i + 1}`}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 300px, (max-width: 1024px) 340px, 420px"
-              />
-            </motion.div>
-          );
-        })}
-
-        {/* Text */}
-        <motion.div
-          style={{
-            opacity: useTransform(scrollYProgress, [0.7, 1], [0, 1]),
-            y: useTransform(scrollYProgress, [0.7, 1], [100, 0]),
-          }}
-          className="absolute z-50 text-center max-w-5xl mx-auto px-6"
-        >
-          <h2
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl
-                         font-bold text-[#8d493a] leading-tight"
+          {/* Text */}
+          <motion.div
+            style={{ opacity: textOpacity, y: textY }}
+            className="pointer-events-none absolute left-1/2 top-1/2
+                       -translate-x-1/2 -translate-y-[90%] text-center px-6 max-w-4xl"
           >
-            Transforming spaces with style,
-            <br />
-            through Troscán's exquisite
-            <br />
-            design expertise.
-          </h2>
-        </motion.div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#8d493a] leading-snug">
+              Transforming spaces with style,
+              <br />
+              through Troscán&apos;s exquisite design expertise.
+            </h2>
+          </motion.div>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

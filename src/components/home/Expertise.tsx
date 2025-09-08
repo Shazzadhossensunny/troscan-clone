@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const Expertise = () => {
   const [hoveredIndex, setHoveredIndex] = useState(1); // Default to "Room Decoration & Styling"
@@ -11,51 +12,43 @@ const Expertise = () => {
       id: 1,
       number: "01",
       title: "Custom Furniture Design",
-      image: "/images/expertise.jpeg", // Replace with your actual image URL
+      image: "/images/expertise.jpeg",
     },
     {
       id: 2,
       number: "02",
       title: "Room Decoration & Styling",
-      image: "/images/decor.jpeg", // Replace with your actual image URL
+      image: "/images/decor.jpeg",
     },
     {
       id: 3,
       number: "03",
       title: "Space Planning & Interior Layout",
-      image: "/images/interior.jpeg", // Replace with your actual image URL
+      image: "/images/interior.jpeg",
     },
     {
       id: 4,
       number: "04",
       title: "Home Renovations & Remodeling",
-      image: "/images/home.jpeg", // Replace with your actual image URL
+      image: "/images/home.jpeg",
     },
     {
       id: 5,
       number: "05",
       title: "Lighting Design",
-      image: "/images/lighiting.jpeg", // Replace with your actual image URL
+      image: "/images/lighiting.jpeg",
     },
     {
       id: 6,
       number: "06",
       title: "Virtual Interior Design Consultations",
-      image: "/images/virtual.jpeg", // Replace with your actual image URL
+      image: "/images/virtual.jpeg",
     },
   ];
 
-  // For demo purposes, using different placeholder images
-  const demoImages = [
-    "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=500&fit=crop", // Custom furniture
-    "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=600&h=500&fit=crop", // Room styling
-    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&h=500&fit=crop", // Space planning
-    "https://images.unsplash.com/photo-1615529328331-f8917597711f?w=600&h=500&fit=crop", // Renovations
-    "https://images.unsplash.com/photo-1524634126442-357e0eac3c14?w=600&h=500&fit=crop", // Lighting
-    "https://images.unsplash.com/photo-1631889993959-41b4e9c6e3c5?w=600&h=500&fit=crop", // Virtual consultations
-  ];
-
-  const currentImage = demoImages[hoveredIndex - 1];
+  const currentItem =
+    expertiseItems.find((item) => item.id === hoveredIndex) ||
+    expertiseItems[1];
 
   return (
     <section className="relative min-h-screen bg-[#f5f0eb] overflow-hidden">
@@ -72,17 +65,20 @@ const Expertise = () => {
           {/* Left Image Section */}
           <div className="relative order-2 lg:order-1">
             <div className="relative aspect-[4/3] sm:aspect-[3/2] lg:aspect-[4/3] overflow-hidden rounded-lg">
-              <motion.img
+              <motion.div
                 key={hoveredIndex}
-                src={currentImage}
-                alt={`Interior design - ${
-                  expertiseItems[hoveredIndex - 1]?.title
-                }`}
-                className="w-full h-full object-cover"
-                initial={{ y: 20, opacity: 0 }}
+                className="w-full h-full"
+                initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
-              />
+              >
+                <Image
+                  src={currentItem.image}
+                  alt={currentItem.title}
+                  fill
+                  className="object-cover"
+                />
+              </motion.div>
             </div>
           </div>
 
@@ -102,16 +98,17 @@ const Expertise = () => {
                   key={item.id}
                   className="relative cursor-pointer group"
                   onMouseEnter={() => setHoveredIndex(item.id)}
-                  whileHover={{ x: 10 }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
                 >
-                  {/* Background animation */}
+                  {/* Background animation - now from bottom to top */}
                   <motion.div
                     className="absolute inset-0 bg-[#8b5a3c] rounded-sm"
                     initial={{ height: 0, y: "100%" }}
                     animate={{
                       height: hoveredIndex === item.id ? "100%" : 0,
-                      y: hoveredIndex === item.id ? 0 : "100%",
+                      y: hoveredIndex === item.id ? "0%" : "100%",
                     }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
                   />
